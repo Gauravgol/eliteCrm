@@ -1,0 +1,62 @@
+{
+  "type": "object",
+  "required": ["name", "password", "email", "phone", "role", "city", "state", "pincode", "country"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "errorMessage": "Name must be at least 2 characters"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6,
+      "errorMessage": "Password must be at least 6 characters"
+    },
+    "role": {
+      "type": "string",
+      "enum": ["admin", "employee", "client"],
+      "errorMessage": "Role must be one of admin, employee, client"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "errorMessage": "Email must be a valid email address"
+    },
+    "phone": {
+      "type": "string",
+      "pattern": "^[0-9]{10}$",
+      "errorMessage": "Phone must be 10 digits"
+    },
+    "city": {
+      "type": "string",
+      "errorMessage": "City is required"
+    },
+    "state": {
+      "type": "string",
+      "errorMessage": "State is required"
+    },
+    "pincode": {
+      "type": "string",
+      "pattern": "^[0-9]{5,6}$",
+      "errorMessage": "Pincode must be 5 or 6 digits"
+    },
+    "country": {
+      "type": "string",
+      "errorMessage": "Country is required"
+    }
+  },
+  "additionalProperties": false,
+  "errorMessage": {
+    "required": {
+      "name": "Name is required",
+      "password": "Password is required",
+      "email": "Email is required",
+      "phone": "Phone is required",
+      "role": "Role is required",
+      "city": "City is required",
+      "state": "State is required",
+      "pincode": "Pincode is required",
+      "country": "Country is required"
+    }
+  }
+}
