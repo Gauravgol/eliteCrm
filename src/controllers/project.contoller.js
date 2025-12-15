@@ -1,7 +1,6 @@
 const Project = require("../schemas/project.model");
 const { responseHandler } = require("../commonUtils/responseHandler");
 const { info_logger, error_logger } = require("../logger/winston");
-const { error } = require("winston");
 
 exports.createProjectController = async (req, res) => {
     const urn = req.headers.urn;

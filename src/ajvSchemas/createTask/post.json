@@ -1,0 +1,108 @@
+{
+    "type": "object",
+    "required": [
+      "name",
+      "description",
+      "status",
+      "priority",
+      "assignedTo",
+      "projectId",
+      "createdBy",
+      "dueDate"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 2,
+        "errorMessage": "Task name must be at least 2 characters long"
+      },
+      "description": {
+        "type": "string",
+        "minLength": 5,
+        "errorMessage": "Task description must be at least 5 characters long"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["INPROGRESS", "DONE", "HOLD", "TODO"],
+        "errorMessage": "Status must be one of INPROGRESS, DONE, HOLD, TODO"
+      },
+      "priority": {
+        "type": "string",
+        "enum": ["HIGH", "MEDIUM", "LOW"],
+        "errorMessage": "Priority must be one of HIGH, MEDIUM, LOW"
+      },
+      "projectId": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{24}$",
+        "errorMessage": "assignedTo must be a valid MongoDB ObjectId"
+      },
+      "assignedTo": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{24}$",
+        "errorMessage": "assignedTo must be a valid MongoDB ObjectId"
+      },
+      "createdBy": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{24}$",
+        "errorMessage": "createdBy must be a valid MongoDB ObjectId"
+      },
+      "dueDate": {
+        "type": "string",
+        "format": "date",
+        "errorMessage": "Due date must be a valid date (YYYY-MM-DD)"
+      },
+      "comments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["comment", "commenterName", "commenterId"],
+          "properties": {
+            "comment": {
+              "type": "string",
+              "minLength": 1,
+              "errorMessage": "Comment cannot be empty"
+            },
+            "commenterName": {
+              "type": "string",
+              "minLength": 2,
+              "errorMessage": "Commenter name must be at least 2 characters"
+            },
+            "commenterId": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "errorMessage": "commenterId must be a valid MongoDB ObjectId"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "attachments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "errorMessage": "Attachment URL must be a valid URL"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false,
+    "errorMessage": {
+      "required": {
+        "name": "Task name is required",
+        "description": "Task description is required",
+        "status": "Task status is required",
+        "priority": "Task priority is required",
+        "assignedTo": "Assigned user is required",
+        "createdBy": "Creator user is required",
+        "dueDate": "Due date is required"
+      },
+      "additionalProperties": "Additional fields are not allowed"
+    }
+  }
+  
