@@ -7,7 +7,13 @@ exports.createTaskController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> CREATE TASK REQ BODY: ${JSON.stringify(req.body)}`);
         const { name, description, status, assignedTo, createdBy, projectId, dueDate, priority } = req.body;
-        const task = await Task.create({ name, description, status, assignedTo, createdBy, projectId, dueDate, priority });
+        const taskPayload = {name, description, createdBy, projectId, priority };
+          
+        if (assignedTo) {taskPayload.assignedTo = assignedTo}
+        if(status){ taskPayload.status = status}
+        if(dueDate){ taskPayload.dueDate = dueDate}
+        await Task.create(taskPayload);
+
         const apiResponse = { code: "200", message: "Task created successfully" };
         return res.send(responseHandler(apiResponse));
     } catch (error) {
@@ -16,6 +22,7 @@ exports.createTaskController = async (req, res) => {
         return res.send(responseHandler(apiResponse));
     }
 };
+
 exports.getTasksController = async (req, res) => {
     const urn = req.headers.urn;
     try {

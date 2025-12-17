@@ -33,26 +33,18 @@ exports.getProjectsController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> GET PROJECTS REQ QUERY: ${JSON.stringify(req.query)}`);
 
-        const { page = 1, limit = 10, search = "" } = req.query;
+        const { page = 1, limit = 10, search = "", projectId } = req.query;
 
         const pageNumber = parseInt(page);
         const pageSize = parseInt(limit);
 
-        // -------- Search Condition -------- //
-        const searchCondition = search
-            ? { name: { $regex: search, $options: "i" } }
-            : {};
-
-        // -------- Total Count -------- //
+        const searchCondition = search ? { name: { $regex: search, $options: "i" } } : {};
+        if(projectId){ searchCondition._id = projectId};
+   
         const totalCount = await Project.countDocuments(searchCondition);
 
         // -------- Fetch Projects -------- //
-        const projects = await Project.find(searchCondition)
-            .sort({ updatedAt: -1 })
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize);
-
-        info_logger(`urn:${urn} >>>>> PROJECTS FETCHED COUNT: ${projects.length}`);
+        const projects = await Project.find(searchCondition).sort({ updatedAt: -1 }).skip((pageNumber - 1) * pageSize).limit(pageSize);
 
         const apiResponse = {
             code: "200",
