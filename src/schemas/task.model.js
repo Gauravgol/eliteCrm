@@ -15,9 +15,12 @@ const taskSchema = new mongoose.Schema({
             commenterId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
             commentedAt: { type: Date, default: Date.now } }
     ],
-    attachments :[{
-        url:{ type:String }
-    }],
+    attachments: [
+        {
+          url: String,
+          public_id: String,
+        },
+      ],
     dueDate: { type: Date}
 }, { timestamps: true });
 

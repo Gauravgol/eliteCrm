@@ -4,6 +4,8 @@ const validateRequest = require('../middleware/validateRequest');
 const { loginUserController } = require('../controllers/login.controller');
 const { createProjectController, getProjectsController } = require('../controllers/project.contoller');
 const { createTaskController, getTasksController } = require('../controllers/task.controller');
+const upload = require("../middleware/upload");
+const uploadWrapper = require('../middleware/uploadWrapper');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -16,7 +18,7 @@ router.post("/registerUser", registerUserController);
 router.post("/login", loginUserController);
 router.post("/createProject", createProjectController);
 router.get("/getProjects", getProjectsController);
-router.post("/createTask", createTaskController);
+router.post("/createTask", uploadWrapper, createTaskController);
 router.get("/getTask", getTasksController)
 
 

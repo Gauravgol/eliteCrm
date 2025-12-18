@@ -7,7 +7,14 @@ exports.createTaskController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> CREATE TASK REQ BODY: ${JSON.stringify(req.body)}`);
         const { name, description, status, assignedTo, createdBy, projectId, dueDate, priority } = req.body;
-        const taskPayload = {name, description, createdBy, projectId, priority };
+        console.log("HIi")
+        const attachments = req.files?.map((file) => ({
+            url: file.path,
+            public_id: file.filename,
+        }));
+        console.log("🚀 ~ attachments:", attachments)
+        return
+        const taskPayload = {name, description, createdBy, projectId, priority,attachments };
           
         if (assignedTo) {taskPayload.assignedTo = assignedTo}
         if(status){ taskPayload.status = status}
