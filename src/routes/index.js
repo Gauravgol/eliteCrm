@@ -3,9 +3,8 @@ const { registerUserController } = require('../controllers/registerUser.controll
 const validateRequest = require('../middleware/validateRequest');
 const { loginUserController } = require('../controllers/login.controller');
 const { createProjectController, getProjectsController } = require('../controllers/project.contoller');
-const { createTaskController, getTasksController } = require('../controllers/task.controller');
+const { createTaskController, getTasksController, updateTaskController } = require('../controllers/task.controller');
 const upload = require("../middleware/upload");
-const uploadWrapper = require('../middleware/uploadWrapper');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -18,8 +17,10 @@ router.post("/registerUser", registerUserController);
 router.post("/login", loginUserController);
 router.post("/createProject", createProjectController);
 router.get("/getProjects", getProjectsController);
-router.post("/createTask", uploadWrapper, createTaskController);
-router.get("/getTask", getTasksController)
+router.post("/createTask", upload.array("attachments", 5), createTaskController);
+router.get("/getTask", getTasksController);
+router.put("/updateTask", upload.array("attachments", 5), updateTaskController)
+ 
 
 
 
