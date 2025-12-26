@@ -31,7 +31,7 @@ exports.loginUserController = async (req, res) => {
             { expiresIn: "7d" }
         );
 
-        apiResponse = { code: 200, message: "Login successful", data: { token, user: { name: user.name, email: user.email, role: user.role } } };
+        apiResponse = { code: 200, message: "Login successful", data: { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } } };
 
         return res.send(responseHandler(apiResponse));
     } catch (error) {

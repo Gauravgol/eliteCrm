@@ -82,7 +82,7 @@ exports.updateProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> UPDATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { projectId, userId, name, description, status, startDate, dueDate  } = req.body;
+        const { projectId, userId, name, description, status, startDate, dueDate, comment, commenterId, commenterName  } = req.body;
 
         const user = await User.findById(userId).select("role name email");
 
@@ -119,6 +119,16 @@ exports.updateProjectController = async (req, res) => {
         if (attachments.length > 0 ) {
             updatePayload.$push = { attachments: { $each: attachments } };
         }
+        if (comment && commenterId && commenterName) {
+            updatePayload.$push = {
+              ...(updatePayload.$push || {}),
+              comments: {
+                comment,
+                commenterId,
+                commenterName,
+              },
+            };
+          }
 
         // -------- Update Project -------- //
         const updatedProject = await Project.findByIdAndUpdate(

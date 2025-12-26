@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const taskSchema = new mongoose.Schema({
     name: { type : String, required: true },
     description: { type: String, required: true },
-    status: { type: String, enum: ["INPROGRESS", "DONE", "HOLD","TODO"], default: "TODO"},
+    status: { type: String, enum: ["INPROGRESS", "COMPLETE", "HOLD","TODO","QCINPROGRESS","QCCOMPLETE","QAINPROGRESS","QACOMPLETE"], default: "TODO"},
     priority: { type: String, enum: ["HIGH", "MEDIUM", "LOW"], required: true},
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref:"User" },
     createdBy: { type:mongoose.Schema.Types.ObjectId, ref:"User", required: true},
