@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ["superAdmin", "admin", "employee", "client"] },
     email: { type: String, required: true, lowercase: true },
     phone: { type: String, required: true, trim: true },
+    profilePic : { type: String },
     address: {
         city: { type: String },
         state: { type: String },
