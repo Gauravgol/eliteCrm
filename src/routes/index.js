@@ -5,6 +5,7 @@ const { loginUserController } = require('../controllers/login.controller');
 const { createProjectController, getProjectsController, updateProjectController } = require('../controllers/project.contoller');
 const { createTaskController, getTasksController, updateTaskController } = require('../controllers/task.controller');
 const upload = require("../middleware/upload");
+const { getMenuController } = require('../controllers/menu.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -22,6 +23,7 @@ router.put("/updateProject", upload.array("attachments",5), updateProjectControl
 router.post("/createTask", upload.array("attachments", 5), createTaskController);
 router.get("/getTask", getTasksController);
 router.put("/updateTask", upload.array("attachments", 5), updateTaskController)
+router.get("/getMenu", getMenuController);
  
 
 
