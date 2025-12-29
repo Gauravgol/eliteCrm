@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUserController, getUsersController } = require('../controllers/registerUser.controller');
+const { registerUserController, getUsersController, getUsersForTagController } = require('../controllers/registerUser.controller');
 const validateRequest = require('../middleware/validateRequest');
 const { loginUserController } = require('../controllers/login.controller');
 const { createProjectController, getProjectsController, updateProjectController } = require('../controllers/project.contoller');
@@ -16,6 +16,7 @@ router.get('/heathCheck', (req, res) => {
 
 router.post("/registerUser", upload.array("profilePic",1), registerUserController);
 router.get("/getUsers", getUsersController)
+router.get("/tagUser", getUsersForTagController)
 router.post("/login", loginUserController);
 router.post("/createProject",upload.array("attachments", 5), createProjectController);
 router.get("/getProjects", getProjectsController);
