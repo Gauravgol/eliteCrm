@@ -6,6 +6,7 @@ const { createProjectController, getProjectsController, updateProjectController 
 const { createTaskController, getTasksController, updateTaskController } = require('../controllers/task.controller');
 const upload = require("../middleware/upload");
 const { getMenuController } = require('../controllers/menu.controller');
+const { getUsersInfoController } = require('../controllers/userInfo.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -25,6 +26,7 @@ router.post("/createTask", upload.array("attachments", 5), createTaskController)
 router.get("/getTask", getTasksController);
 router.put("/updateTask", upload.array("attachments", 5), updateTaskController)
 router.get("/getMenu", getMenuController);
+router.get("/getUserInfo", getUsersInfoController)
  
 
 
