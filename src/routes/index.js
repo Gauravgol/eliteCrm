@@ -7,6 +7,7 @@ const { createTaskController, getTasksController, updateTaskController } = requi
 const upload = require("../middleware/upload");
 const { getMenuController } = require('../controllers/menu.controller');
 const { getUsersInfoController } = require('../controllers/userInfo.controller');
+const { getChatUser, getChatMessages } = require('../controllers/chat.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -16,17 +17,21 @@ router.get('/heathCheck', (req, res) => {
 });
 
 router.post("/registerUser", upload.array("profilePic",1), registerUserController);
-router.get("/getUsers", getUsersController)
-router.get("/tagUser", getUsersForTagController)
+router.get("/getUsers", getUsersController);
+router.get("/tagUser", getUsersForTagController);
 router.post("/login", loginUserController);
 router.post("/createProject",upload.array("attachments", 5), createProjectController);
 router.get("/getProjects", getProjectsController);
 router.put("/updateProject", upload.array("attachments",5), updateProjectController)
 router.post("/createTask", upload.array("attachments", 5), createTaskController);
 router.get("/getTask", getTasksController);
-router.put("/updateTask", upload.array("attachments", 5), updateTaskController)
+router.put("/updateTask", upload.array("attachments", 5), updateTaskController);
 router.get("/getMenu", getMenuController);
-router.get("/getUserInfo", getUsersInfoController)
+router.get("/getUserInfo", getUsersInfoController);
+router.get("/getChatUsers", getChatUser);
+router.get("/getChatMessages", getChatMessages);
+
+
  
 
 
