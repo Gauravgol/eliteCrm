@@ -29,11 +29,14 @@ exports.getChatUser = async (req, res) => {
 
 exports.getChatMessages = async (req, res) => {
   try {
-    const { userId, otherUserId } = req.query;
+    const { userId, otherUserId, limit = 20, before } = req.query;
 
     const roomId = [userId, otherUserId].sort().join("_");
+    if (before) {
+        query.createdAt = { $lt: new Date(before) };
+      }
 
-    const messages = await Message.find({ roomId }).sort({ createdAt: -1 }).lean();
+    const messages = await Message.find({ roomId }).sort({ createdAt: -1 }).limit(Number(limit)).lean();
 
     return res.send( responseHandler({ code: "200", data: messages }));
   } catch (error) {
