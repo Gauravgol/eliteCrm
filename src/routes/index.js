@@ -8,6 +8,7 @@ const upload = require("../middleware/upload");
 const { getMenuController } = require('../controllers/menu.controller');
 const { getUsersInfoController } = require('../controllers/userInfo.controller');
 const { getChatUser, getChatMessages } = require('../controllers/chat.controller');
+const { dashboardController } = require('../controllers/dashboard.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -30,6 +31,7 @@ router.get("/getMenu", getMenuController);
 router.get("/getUserInfo", getUsersInfoController);
 router.get("/getChatUsers", getChatUser);
 router.get("/getChatMessages", getChatMessages);
+router.get("/getDashboardData", dashboardController)
 
 
  

@@ -4,7 +4,7 @@ const projectSchema = new mongoose.Schema({
     name: { type : String, required: true },
     description: { type: String, required: true },
     owner: { type:mongoose.Schema.Types.ObjectId, ref:"User", required: true},
-    status: { type: String, enum: ["TODO","INPROGRESS","TESTING", "DELIVERD", "HOLD"],  required: true},
+    status: { type: String, enum: ["TODO","INPROGRESS","TESTING", "DELIVERED", "HOLD"],  required: true},
     comments:[
         {
             comment: { type: String, required: true },
