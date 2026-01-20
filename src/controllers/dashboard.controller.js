@@ -4,7 +4,7 @@ const Task = require("../schemas/task.model");
 const { responseHandler } = require("../commonUtils/responseHandler");
 const { info_logger, error_logger } = require("../logger/winston");
 const mongoQuery = require("../db/mongoQuery");
-const { employeeDashboardPipeline, projectDashboardPipeline } = require("../queries/dashboard")
+const { employeeDashboardPipeline, projectDashboardPipeline, clientDashboardPipeline } = require("../queries/dashboard")
 
 exports.dashboardController = async (req, res) => {
   const urn = req.headers.urn;
@@ -31,7 +31,7 @@ exports.dashboardController = async (req, res) => {
       const projectDashboard = { TODO: 0, INPROGRESS: 0, TESTING: 0, DELIVERED: 0, HOLD: 0 };
       projectAggregation.forEach(item => { projectDashboard[item._id] = item.count });
 
-      return res.send(responseHandler({ data: { tasks: taskDashboard, projects: projectDashboard } }));
+      return res.send(responseHandler({ data: { tasks: taskDashboard, projects: projectDashboard, role: user.role } }));
     }
     else if (user.role === "employee") {
 
@@ -43,15 +43,24 @@ exports.dashboardController = async (req, res) => {
       const dashboardData = { INPROGRESS: 0, COMPLETE: 0, HOLD: 0, TODO: 0, QC: 0 };
       aggregationResult.forEach(item => { dashboardData[item._id] = item.count });
 
-      return res.send(responseHandler({ code: 200, data: dashboardData }));
+      return res.send(responseHandler({ code: 200, data: { tasks: dashboardData, projects: {}, role: user.role } }));
     }
     else if (user.role === "client") {
+      const aggregationResult = await mongoQuery.aggregate({
+        model: Project,
+        pipeline: clientDashboardPipeline(userId)
+      });
+
+      const dashboardData =  { TODO: 0, INPROGRESS: 0, TESTING: 0, DELIVERED: 0, HOLD: 0 };
+      aggregationResult.forEach(item => { dashboardData[item._id] = item.count });
+
+      return res.send(responseHandler({ code: 200, data: { tasks: {}, projects: dashboardData, role: user.role } }));
 
     }
 
 
 
-    const apiResponse = { code: 400, data: {}};
+    const apiResponse = { code: 400, data: {} };
     return res.send(responseHandler(apiResponse));
 
   } catch (error) {

@@ -9,13 +9,16 @@ exports.createProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> CREATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { name, description, owner, status, startDate, dueDate } = req.body;
+        const { name, description, owner, status, startDate, dueDate, createdBy } = req.body;
         const attachments = (req.files || []).map((file) => ({
             url: file.location,        // S3 public URL
             public_id: file.key,       // S3 object key
         }));
 
-        let projectPayload = { name, description, owner, status, startDate, dueDate, attachments };
+        let projectPayload = { name, description, createdBy, status, startDate, dueDate, attachments };
+        if(owner){
+            projectPayload.owner = owner
+        }
 
         // -------- Create Project -------- //
         const project = await Project.create(projectPayload);
@@ -51,7 +54,7 @@ exports.getProjectsController = async (req, res) => {
         const totalCount = await Project.countDocuments(searchCondition);
 
         // -------- Fetch Projects -------- //
-        const projects = await Project.find(searchCondition).populate("owner", "name email").sort({ updatedAt: -1 }).skip((pageNumber - 1) * pageSize).limit(pageSize);
+        const projects = await Project.find(searchCondition).populate("createdBy","name email -_id").populate("owner", "name email -_id").sort({ updatedAt: -1 }).skip((pageNumber - 1) * pageSize).limit(pageSize);
 
         const apiResponse = {
             code: "200",

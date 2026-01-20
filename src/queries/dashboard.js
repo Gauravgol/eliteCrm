@@ -32,3 +32,19 @@ exports.projectDashboardPipeline = () => {
         }
     ];
 };
+
+exports.clientDashboardPipeline = (userId) => {
+    return [
+        {
+            $match: {
+                owner: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $group: {
+                _id: "$status",
+                count: { $sum: 1 }
+            }
+        }
+    ];
+};
