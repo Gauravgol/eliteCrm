@@ -127,3 +127,34 @@ exports.getUsersForTagController = async (req, res) => {
     }
   };
   
+  exports.getClientForTagController = async (req, res) => {
+    try {
+      const { search = "" } = req.query;
+      const filterCondition = { role: "client" };
+  
+      if (search) {
+        filterCondition.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } }
+        ];
+      }
+  
+      const users = await User.find(filterCondition)
+        .select("_id name")
+        .limit(5)
+        .lean();
+  
+      return res.send(
+        responseHandler({
+          code: "200",
+          message: "Users fetched successfully",
+          data: {
+            list: users,
+          },
+        })
+      );
+    } catch (error) {
+      return res.send(
+        responseHandler({ code: 500, message: "Something went wrong: " + error.message }));
+    }
+  };  
