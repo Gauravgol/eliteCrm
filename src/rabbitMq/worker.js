@@ -2,10 +2,11 @@ require('dotenv').config();
 const amqp = require("amqplib");
 const { info_mqLogger } = require("../logger/winston");
 const { sendEmail } = require("../service/email.service");
+const { staticData } = require('../commonUtils/apiStaticData');
 
-const EXCHANGE = "notification_exchange";
-const QUEUE = "email_queue";
-const ROUTING_KEY = "notification.email";
+const EXCHANGE = staticData.exchange;
+const QUEUE = staticData.queue;
+const ROUTING_KEY = staticData.routingKey;
 
 async function startWorker() {
   try {
@@ -37,6 +38,7 @@ async function startWorker() {
       let payload;
 
       try {
+        console.log("IN mail send")
         payload = JSON.parse(msg.content.toString());
 
         info_mqLogger(

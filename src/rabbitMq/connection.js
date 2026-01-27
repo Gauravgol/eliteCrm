@@ -1,11 +1,12 @@
 const amqp = require("amqplib");
 const { info_mqLogger } = require("../logger/winston");
+const { staticData } = require("../commonUtils/apiStaticData");
 
 let connection = null;
 let channel = null;
 let isConnecting = false;
 
-const EXCHANGE = "notification_exchange";
+const EXCHANGE = staticData.exchange;
 
 async function connectRabbitMQ() {
   if (isConnecting) return;
