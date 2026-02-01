@@ -43,13 +43,15 @@ exports.getProjectsController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> GET PROJECTS REQ QUERY: ${JSON.stringify(req.query)}`);
 
-        const { page = 1, limit = 10, search = "", projectId } = req.query;
+        const { page = 1, limit = 10, search = "", projectId, owner, status } = req.query;
 
         const pageNumber = parseInt(page);
         const pageSize = parseInt(limit);
 
         const searchCondition = search ? { name: { $regex: search, $options: "i" } } : {};
         if (projectId) { searchCondition._id = projectId };
+        if ( owner ) { searchCondition.owner  = owner };
+        if ( status ) { searchCondition.status = status };
 
         const totalCount = await Project.countDocuments(searchCondition);
 

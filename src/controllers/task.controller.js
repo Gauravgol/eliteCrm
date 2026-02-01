@@ -4,6 +4,8 @@ const { responseHandler } = require("../commonUtils/responseHandler");
 const { info_logger, error_logger } = require("../logger/winston");
 const { publishEvent } = require("../rabbitMq/connection");
 const { staticData } = require("../commonUtils/apiStaticData");
+const mongoQuery = require("../db/mongoQuery");
+const { createNotification } = require("../service/notification.service");
 
 exports.createTaskController = async (req, res) => {
   const urn = req.headers.urn;
@@ -162,6 +164,21 @@ exports.updateTaskController = async (req, res) => {
       return res.send(
         responseHandler({ code: 404, message: "Task not found" })
       );
+    }
+
+    if(assignedTo){
+      await createNotification({
+        userId: updatedTask.assignedTo._id,
+        type: "TASK_ASSIGNED",
+        title: "New Task Assigned",
+        message: `You have been assigned the task "${updatedTask.name}"`,
+        entityType: "TASK",
+        entityId: updatedTask._id,
+        metadata: {
+          assignedBy: updatedTask.createdBy.name,
+          priority: updatedTask.priority,
+        },
+      });
     }
 
     const apiResponse = { code: "200", message: "Task updated successfully", apiResponseData: updatedTask };
