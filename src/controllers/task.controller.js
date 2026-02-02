@@ -43,6 +43,21 @@ exports.createTaskController = async (req, res) => {
           `urn:${urn} >>>>> TASK_ASSIGNED event published for ${assignedUser.email}`
         );
       }
+      //Notification
+ 
+      await createNotification({
+        userId: assignedTo,
+        type: "TASK_ASSIGNED",
+        title: "New Task Assigned",
+        message: `You have been assigned the task "${updatedTask.name}"`,
+        entityType: "TASK",
+        entityId: task._id,
+        metadata: {
+          assignedBy: createdBy,
+          priority: priority,
+        },
+      });
+    
     }
 
 
