@@ -29,9 +29,7 @@ exports.createTaskController = async (req, res) => {
       const assignedUser = await User.findById(assignedTo).select("email name");
       const creator = await User.findById(createdBy).select("name");
       if (assignedUser?.email) {
-        publishEvent("notification.email", {
-          type: "TASK_ASSIGNED",
-          to: assignedUser.email,
+        publishEvent("notification.email", { type: "TASK_ASSIGNED", to: assignedUser.email,
           data: {
             taskName: task.name,
             description: task.description,

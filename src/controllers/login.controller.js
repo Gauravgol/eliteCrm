@@ -25,13 +25,42 @@ exports.loginUserController = async (req, res) => {
             return res.send(responseHandler(apiResponse));
         }
         
-        const token = jwt.sign(
+        // const token = jwt.sign(
+        //     { userId: user._id, email: user.email, role: user.role },
+        //     process.env.JWT_SECRET,
+        //     { expiresIn: "7d" }
+        // );
+
+        // Access Token (short-lived)
+        const accessToken = jwt.sign(
             { userId: user._id, email: user.email, role: user.role },
             process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        // Refresh Token (long-lived)
+        const refreshToken = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
         );
 
-        apiResponse = { code: 200, message: "Login successful", data: { token, user: { id: user._id, name: user.name, email: user.email, role: user.role } } };
+        // Set cookies
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            maxAge: 15 * 60 * 1000, // 15 min
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        apiResponse = { code: 200, message: "Login successful", data: { user: { id: user._id, name: user.name, email: user.email, role: user.role } } };
 
         return res.send(responseHandler(apiResponse));
     } catch (error) {
