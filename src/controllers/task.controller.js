@@ -47,7 +47,7 @@ exports.createTaskController = async (req, res) => {
         userId: assignedTo,
         type: "TASK_ASSIGNED",
         title: "New Task Assigned",
-        message: `You have been assigned the task "${updatedTask.name}"`,
+        message: `You have been assigned the task "${task.name}"`,
         entityType: "TASK",
         entityId: task._id,
         metadata: {
