@@ -29,9 +29,7 @@ exports.createTaskController = async (req, res) => {
       const assignedUser = await User.findById(assignedTo).select("email name");
       const creator = await User.findById(createdBy).select("name");
       if (assignedUser?.email) {
-        publishEvent("notification.email", {
-          type: "TASK_ASSIGNED",
-          to: assignedUser.email,
+        publishEvent("notification.email", { type: "TASK_ASSIGNED", to: assignedUser.email,
           data: {
             taskName: task.name,
             description: task.description,
@@ -43,6 +41,21 @@ exports.createTaskController = async (req, res) => {
           `urn:${urn} >>>>> TASK_ASSIGNED event published for ${assignedUser.email}`
         );
       }
+      //Notification
+ 
+      await createNotification({
+        userId: assignedTo,
+        type: "TASK_ASSIGNED",
+        title: "New Task Assigned",
+        message: `You have been assigned the task "${task.name}"`,
+        entityType: "TASK",
+        entityId: task._id,
+        metadata: {
+          assignedBy: createdBy,
+          priority: priority,
+        },
+      });
+    
     }
 
 

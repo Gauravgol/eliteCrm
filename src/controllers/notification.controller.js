@@ -1,12 +1,13 @@
 const Notification = require("../schemas/notification.model");
 const { responseHandler } = require("../commonUtils/responseHandler");
 const { info_logger, error_logger } = require("../logger/winston");
+const mongoQuery = require("../db/mongoQuery")
 
 exports.getNotificationsController = async (req, res) => {
   const urn = req.headers.urn;
 
   try {
-    info_logger( `urn:${urn} >>>>> GET NOTIFICATIONS REQ QUERY: ${JSON.stringify(req.query)}`);
+    info_logger(`urn:${urn} >>>>> GET NOTIFICATIONS REQ QUERY: ${JSON.stringify(req.query)}`);
 
     const { page = 1, limit = 10, isRead, type, userId } = req.query;
 
@@ -48,5 +49,27 @@ exports.getNotificationsController = async (req, res) => {
         message: "Something went wrong: " + error.message,
       })
     );
+  }
+};
+
+exports.markNotificationsAsReadController = async (req, res) => {
+  const urn = req.headers.urn;
+
+  try {
+    info_logger(`urn:${urn} >>>>> MARK NOTIFICATIONS READ REQ BODY: ${JSON.stringify(req.body)}`);
+    const { notificationIds = [], userId } = req.body;
+    let updatedCount = 0;
+
+    const result = await mongoQuery.updateMany({ model: Notification,
+      filter: { _id: { $in: notificationIds }, userId },
+      update: { $set: { isRead: true } },
+    });
+
+    updatedCount = result.modifiedCount;
+    return res.send( responseHandler({ code: 200, message:"success", data: {updatedCount }}));
+
+  } catch (error) {
+    error_logger(`urn:${urn} >>>>> MARK NOTIFICATIONS READ ERROR ${error.message}`);
+    return res.send( responseHandler({ code: 500, message: "Something went wrong: " + error.message }));
   }
 };

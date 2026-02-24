@@ -9,7 +9,8 @@ const { getMenuController } = require('../controllers/menu.controller');
 const { getUsersInfoController } = require('../controllers/userInfo.controller');
 const { getChatUser, getChatMessages } = require('../controllers/chat.controller');
 const { dashboardController } = require('../controllers/dashboard.controller');
-const { getNotificationsController } = require('../controllers/notification.controller');
+const { getNotificationsController, markNotificationsAsReadController } = require('../controllers/notification.controller');
+const { auth } = require('../middleware/auth');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -35,6 +36,7 @@ router.get("/getChatUsers", getChatUser);
 router.get("/getChatMessages", getChatMessages);
 router.get("/getDashboardData", dashboardController);
 router.get("/getNotification", getNotificationsController);
+router.post("/markNotification", markNotificationsAsReadController)
 
 
  
