@@ -23,7 +23,7 @@ app.use('/', router)
 
 //-------------DB Connection-----------------------------//
 connectToDb()
-connectRabbitMQ()
+// connectRabbitMQ()
 
 
 app.listen(port, () => {

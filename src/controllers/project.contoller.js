@@ -9,13 +9,13 @@ exports.createProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> CREATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { name, description, owner, status, startDate, dueDate, createdBy } = req.body;
+        const { name, description, owner, status, startDate, dueDate, createdBy, projectDetails } = req.body;
         const attachments = (req.files || []).map((file) => ({
             url: file.location,        // S3 public URL
             public_id: file.key,       // S3 object key
         }));
 
-        let projectPayload = { name, description, createdBy, status, startDate, dueDate, attachments };
+        let projectPayload = { name, description, createdBy, status, startDate, dueDate, attachments, projectDetails };
         if(owner){
             projectPayload.owner = owner
         }
@@ -87,7 +87,7 @@ exports.updateProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> UPDATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { projectId, userId, name, description, status, startDate, dueDate, comment, commenterId, commenterName  } = req.body;
+        const { projectId, userId, name, description, status, startDate, dueDate, comment, commenterId, commenterName, projectDetails} = req.body;
 
         const user = await User.findById(userId).select("role name email");
 
@@ -124,6 +124,7 @@ exports.updateProjectController = async (req, res) => {
         if (attachments.length > 0 ) {
             updatePayload.$push = { attachments: { $each: attachments } };
         }
+        if (projectDetails) { updatePayload.projectDetails = req.body.projectDetails };
         if (comment && commenterId && commenterName) {
             updatePayload.$push = {
               ...(updatePayload.$push || {}),

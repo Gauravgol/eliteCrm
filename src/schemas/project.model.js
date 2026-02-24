@@ -21,6 +21,7 @@ const projectSchema = new mongoose.Schema({
       ],
     startDate: { type: Date, required: true },
     dueDate: { type: Date, required: true},
+    projectDetails: { type: Object, required: true}
 }, { timestamps: true });
 
 module.exports = mongoose.model("Project", projectSchema);
