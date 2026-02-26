@@ -14,8 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.956.0",
+    "@aws-sdk/client-s3": "^3.998.0",
     "@aws-sdk/lib-storage": "^3.956.0",
+    "@aws-sdk/s3-request-presigner": "^3.998.0",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",
     "ajv-formats": "^3.0.1",

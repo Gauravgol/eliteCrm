@@ -9,13 +9,14 @@ exports.createProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> CREATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { name, description, owner, status, startDate, dueDate, createdBy, projectDetails } = req.body;
-        const attachments = (req.files || []).map((file) => ({
-            url: file.location,        // S3 public URL
-            public_id: file.key,       // S3 object key
-        }));
+        const { name, description, owner, status, startDate, dueDate, createdBy, projectDetails, attachments } = req.body;
+        // const attachments = (req.files || []).map((file) => ({
+        //     url: file.location,        // S3 public URL
+        //     public_id: file.key,       // S3 object key
+        // }));
 
-        let projectPayload = { name, description, createdBy, status, startDate, dueDate, attachments, projectDetails };
+        let projectPayload = { name, description, createdBy, status, startDate, dueDate, projectDetails };
+        if(attachments) { projectPayload.attachments = attachments}
         if(owner){
             projectPayload.owner = owner
         }

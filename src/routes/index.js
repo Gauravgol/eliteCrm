@@ -11,6 +11,7 @@ const { getChatUser, getChatMessages } = require('../controllers/chat.controller
 const { dashboardController } = require('../controllers/dashboard.controller');
 const { getNotificationsController, markNotificationsAsReadController } = require('../controllers/notification.controller');
 const { auth } = require('../middleware/auth');
+const { generateUploadUrl } = require('../controllers/upload.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -24,7 +25,8 @@ router.get("/getUsers", getUsersController);
 router.get("/tagUser", getUsersForTagController);
 router.get("/tagClient", getClientForTagController);
 router.post("/login", loginUserController);
-router.post("/createProject",upload.array("attachments", 5), createProjectController);
+// router.post("/createProject",upload.array("attachments", 5), createProjectController);
+router.post("/createProject",createProjectController);
 router.get("/getProjects", getProjectsController);
 router.put("/updateProject", upload.array("attachments",5), updateProjectController)
 router.post("/createTask", upload.array("attachments", 5), createTaskController);
@@ -37,9 +39,7 @@ router.get("/getChatMessages", getChatMessages);
 router.get("/getDashboardData", dashboardController);
 router.get("/getNotification", getNotificationsController);
 router.post("/markNotification", markNotificationsAsReadController)
-
-
- 
+router.post("/generateUploadUrl", generateUploadUrl)
 
 
 
