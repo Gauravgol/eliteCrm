@@ -12,6 +12,7 @@ const { dashboardController } = require('../controllers/dashboard.controller');
 const { getNotificationsController, markNotificationsAsReadController } = require('../controllers/notification.controller');
 const { auth } = require('../middleware/auth');
 const { generateUploadUrl } = require('../controllers/upload.controller');
+const { sendMail } = require('../controllers/sendMail.controller');
 const router = express.Router();
  
 router.use(validateRequest());
@@ -39,7 +40,8 @@ router.get("/getChatMessages", getChatMessages);
 router.get("/getDashboardData", dashboardController);
 router.get("/getNotification", getNotificationsController);
 router.post("/markNotification", markNotificationsAsReadController)
-router.post("/generateUploadUrl", generateUploadUrl)
+router.post("/generateUploadUrl", generateUploadUrl);
+router.post("/sendMail", sendMail);
 
 
 
