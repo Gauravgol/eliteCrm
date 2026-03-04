@@ -9,6 +9,7 @@ exports.sendMail = async (req, res) => {
       state,
       serviceNeeded,
       additionalDetails,
+      callDetails
     } =  req.body;
     console.log("🚀 ~ req.body:", req.body)
   
@@ -25,8 +26,10 @@ exports.sendMail = async (req, res) => {
 
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color:#333;">
-        <h2 style="color:#2563eb;">New Service Inquiry</h2>
-
+      ${callDetails
+        ? `<h2 style="color:#2563eb;">Call Request</h2>`
+        : `<h2 style="color:#2563eb;">New Service Inquiry</h2>`
+      }
         <table style="border-collapse: collapse; width: 100%;">
           <tr>
             <td><strong>Full Name:</strong></td>
@@ -57,6 +60,15 @@ exports.sendMail = async (req, res) => {
           </tr>`
               : ""
           }
+          ${
+            callDetails
+              ? `
+          <tr>
+            <td><strong>Call Details:</strong></td>
+            <td>${callDetails}</td>
+          </tr>`
+              : ""
+          }
         </table>
 
         <p style="margin-top:20px;">
@@ -64,11 +76,9 @@ exports.sendMail = async (req, res) => {
         </p>
       </div>
     `;
-
-    // 🔹 Send Email
     await transporter.sendMail({
       from: `"Website Inquiry" <${process.env.SMTP_USER}>`,
-      to: email, // your email
+      to: process.env.SMTP_USER,
       subject: `New Inquiry from ${fullName}`,
       html,
     });

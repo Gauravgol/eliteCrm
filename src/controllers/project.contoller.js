@@ -88,7 +88,7 @@ exports.updateProjectController = async (req, res) => {
     try {
         info_logger(`urn:${urn} >>>>> UPDATE PROJECT REQ BODY: ${JSON.stringify(req.body)}`);
 
-        const { projectId, userId, name, description, status, startDate, dueDate, comment, commenterId, commenterName, projectDetails} = req.body;
+        const { projectId, userId, name, description, status, startDate, dueDate, comment, commenterId, commenterName, projectDetails, attachments} = req.body;
 
         const user = await User.findById(userId).select("role name email");
 
@@ -107,13 +107,13 @@ exports.updateProjectController = async (req, res) => {
         }
 
         // -------- Attachments (Optional) -------- //
-        let attachments = [];
-        if (req.files && req.files.length > 0) {
-            attachments = req.files.map((file) => ({
-                url: file.location,
-                public_id: file.key,
-            }));
-        }
+        // let attachments = [];
+        // if (req.files && req.files.length > 0) {
+        //     attachments = req.files.map((file) => ({
+        //         url: file.location,
+        //         public_id: file.key,
+        //     }));
+        // }
 
         // -------- Build Update Payload (ONLY RECEIVED FIELDS) -------- //
         const updatePayload = {};
@@ -122,9 +122,7 @@ exports.updateProjectController = async (req, res) => {
         if (status) { updatePayload.status = req.body.status };
         if (startDate) { updatePayload.startDate = req.body.startDate };
         if (dueDate) { updatePayload.dueDate = req.body.dueDate };
-        if (attachments.length > 0 ) {
-            updatePayload.$push = { attachments: { $each: attachments } };
-        }
+        if(attachments) { updatePayload.attachments = attachments}
         if (projectDetails) { updatePayload.projectDetails = req.body.projectDetails };
         if (comment && commenterId && commenterName) {
             updatePayload.$push = {
