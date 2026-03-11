@@ -1,6 +1,9 @@
 const nodemailer = require("nodemailer");
+const { info_logger, error_logger } = require("../logger/winston");
 
 exports.sendMail = async (req, res) => {
+  let urn = req.body.urn;
+
   try {
     const {
       fullName,
@@ -10,9 +13,9 @@ exports.sendMail = async (req, res) => {
       serviceNeeded,
       additionalDetails,
       callDetails
-    } =  req.body;
-    console.log("🚀 ~ req.body:", req.body)
-  
+    } = req.body;
+
+    info_logger(`urn:${urn} >>>>> SEND MAIL REQ BODY: ${JSON.stringify(req.body)}`);
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -24,12 +27,20 @@ exports.sendMail = async (req, res) => {
       },
     });
 
+    const isCallRequest = callDetails && callDetails.date && callDetails.time;
+
+    const subject = isCallRequest
+      ? `Call Scheduled by ${fullName}`
+      : `New Service Inquiry from ${fullName}`;
+
+    const heading = isCallRequest
+      ? "Call Request Scheduled"
+      : "New Service Inquiry";
+
     const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color:#333;">
-      ${callDetails
-        ? `<h2 style="color:#2563eb;">Call Request</h2>`
-        : `<h2 style="color:#2563eb;">New Service Inquiry</h2>`
-      }
+        <h2 style="color:#2563eb;">${heading}</h2>
+
         <table style="border-collapse: collapse; width: 100%;">
           <tr>
             <td><strong>Full Name:</strong></td>
@@ -51,6 +62,7 @@ exports.sendMail = async (req, res) => {
             <td><strong>Service Needed:</strong></td>
             <td>${serviceNeeded}</td>
           </tr>
+
           ${
             additionalDetails
               ? `
@@ -60,35 +72,45 @@ exports.sendMail = async (req, res) => {
           </tr>`
               : ""
           }
+
           ${
-            callDetails
+            isCallRequest
               ? `
           <tr>
-            <td><strong>Call Details:</strong></td>
-            <td>${callDetails}</td>
+            <td><strong>Call Date:</strong></td>
+            <td>${callDetails.date}</td>
+          </tr>
+          <tr>
+            <td><strong>Call Time:</strong></td>
+            <td>${callDetails.time}</td>
           </tr>`
               : ""
           }
         </table>
 
         <p style="margin-top:20px;">
-          This inquiry was submitted from your website.
+          This request was submitted from your website.
         </p>
       </div>
     `;
+
     await transporter.sendMail({
       from: `"Website Inquiry" <${process.env.SMTP_USER}>`,
       to: process.env.SMTP_USER,
-      subject: `New Inquiry from ${fullName}`,
+      subject,
       html,
     });
 
     return res.status(200).json({
       success: true,
-      message: "Inquiry sent successfully",
+      message: isCallRequest
+        ? "Your call has been scheduled successfully."
+        : "Inquiry sent successfully.",
     });
 
   } catch (error) {
+    error_logger(`urn:${urn} >>>>> SEND MAIL ERROR: ${error}`);
+
     console.error("Email Error:", error);
 
     return res.status(500).json({
