@@ -1,6 +1,8 @@
 const User = require("../schemas/user.model");
 const bcrypt = require("bcryptjs");
-const { responseHandler } = require("../commonUtils/responseHandler")
+const { responseHandler } = require("../commonUtils/responseHandler");
+const { info_logger, error_logger } = require("../logger/winston");
+
 
 exports.registerUserController = async (req, res) => {
     try {
@@ -38,7 +40,6 @@ exports.registerUserController = async (req, res) => {
 
         return res.send(responseHandler(apiResponse ));
     } catch (error) {
-        console.log("🚀 ~ error:", error.message)
         let apiResponse = { code: "500", message: "something went wrong" + error.message };
         res.send(responseHandler(apiResponse));
     }
