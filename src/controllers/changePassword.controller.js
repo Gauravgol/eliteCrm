@@ -8,11 +8,11 @@ const { info_logger, error_logger } = require("../logger/winston");
 
 
 exports.changePasswordController = async (req, res) => {
+    let urn = req.headers.urn
     try {
         info_logger(`urn:${urn} >>>>> CHANGE PASSWORD REQ BODY: ${JSON.stringify(req.body)}`);
         const { userId, password } = req.body;
-        const userInfo = await mongoQuery.findOne({model:User}, {_id: userId},{role:1})
-     
+        const userInfo = await mongoQuery.findOne({model:User}, {_id: userId},{ role:1 })
         if (!userInfo) {
             return res.send(responseHandler({ code: 404, message: "User not found" }));
         };
